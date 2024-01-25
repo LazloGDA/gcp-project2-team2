@@ -13,7 +13,7 @@ steps:
   secretEnv: ['USERNAME']
 availableSecrets:
   secretManager:
-  - versionName: projects/gcp-project2-team2/secrets/docker-password/versions/1
+  - versionName: projects/gcp-project2-team2/secrets/docker-password/versions/latest
     env: 'PASSWORD'
-  - versionName: projects/gcp-project2-team2/secrets/docker-username/versions/1
+  - versionName: projects/gcp-project2-team2/secrets/docker-username/versions/latest
     env: 'USERNAME'

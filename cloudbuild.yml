@@ -1,0 +1,5 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', gcr.io/lunar-arc-409013/devops-demo-app','.']
+images:
+- 'gcr.io/lunar-arc-40913/devops-demo-app'

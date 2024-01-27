@@ -1,0 +1,33 @@
+version: '3.1'
+services:
+  metabase:
+    image: metabase/metabase:latest
+    volumes:
+      - /python-app/data/db:/metabase-data
+    ports:
+      - "3000:3000"
+#    environment:
+#      MB_DB_TYPE: "mysql"
+#      MB_DB_HOST: ""
+#      MB_DB_NAME: "metabase"
+
+#    secrets:
+#      - db_credentials
+  db:
+    image: mysql
+    deploy:
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_USER: dba
+      MYSQL_DATABASE: metabase
+      MYSQL_ROOT_PASSWORD: "EhTbmTtNS5KXO+U7"
+      MYSQL_PASSWORD: "A1YTsqilzHkUQ4/+"
+#    volumes:
+#      - /Users/A347826/opt/docker/volumes/mysql:/var/lib/mysql
+
+#  adminer:
+#    image: adminer
+#    ports:
+#      - 8080:8080
+

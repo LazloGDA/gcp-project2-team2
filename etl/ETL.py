@@ -22,10 +22,19 @@ mongo_db = mongo_client[mongo_db_name]
 mongo_collection = mongo_db[mongo_collection_name]
 
 # Fetch data from MongoDB
-mongo_docs = list(mongo_collection.find({}))
+data = list(mongo_collection.find({}))
 
 # Convert to Pandas DataFrame
-df = pd.DataFrame(mongo_docs)
+#df = pd.DataFrame(mongo_docs)
+df = pd.json_normalize(data)
+
+# Handle the 'weather' part separately
+weather_data = pd.json_normalize(df['weather'][0] if 'weather' in df.columns else [])
+weather_columns = [f'weather.{col}' for col in weather_data.columns]
+df[weather_columns] = weather_data
+
+# Drop the original 'weather' column
+df.drop('weather', axis=1, inplace=True)
 
 # Connect to MySQL
 mysql_conn = mysql.connector.connect(**mysql_config)

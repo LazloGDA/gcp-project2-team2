@@ -12,3 +12,5 @@ If you have connection issue in metabase Web-UI:
 connections on Unix to localhost are made using a Unix socket file by default:
 - To force TCP/IP transport to be used instead, specify a --protocol option
 - mysql --host=localhost --protocol=TCP
+
+

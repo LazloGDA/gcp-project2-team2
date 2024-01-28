@@ -1,10 +1,9 @@
 import time
 import logging
-import mysql
+import mysql.connector
 
 def get_db_connection_on_docker() :
 
-  import mysql.connector
   INSTCONN_NAME = f"{'docker-compose'}:{'gcp-project2-team2'}:{'sqldb'}"
   DB_USER = "dba"
   DB_PASS = "A1YTsqilzHkUQ4"

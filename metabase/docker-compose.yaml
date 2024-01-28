@@ -4,6 +4,8 @@ services:
     build: .
     image: sql-test-app
     container_name: etl
+    depends_on:
+      - db
   metabase:
     image: metabase/metabase:latest
     container_name: metabase

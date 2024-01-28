@@ -1,4 +1,4 @@
-CREATE TABLE data_db.weather (
+CREATE TABLE weather (
     city_number INT NOT NULL AUTO_INCREMENT, 
     PRIMARY KEY(city_number),
     city_name VARCHAR(255), 

@@ -1,3 +1,4 @@
+use data_db;
 CREATE TABLE weather (
     city_number INT NOT NULL AUTO_INCREMENT, 
     PRIMARY KEY(city_number),

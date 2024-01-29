@@ -10,8 +10,8 @@ services:
 
   python-app:
     build: .
-    volumes:
-      - ./app:/app
+   # volumes:
+    #  - ./app:/app
     depends_on:
       - mongodb
       - mysql

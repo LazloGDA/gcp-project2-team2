@@ -5,7 +5,7 @@ from pymongo import MongoClient
 # MongoDB connection settings
 mongo_uri = "mongodb://mongodb:27017/"
 mongo_db_name = "data_db"
-mongo_collection_name = "weather"
+mongo_collection_name = "data_collection"
 
 # MySQL connection settings
 mysql_config = {

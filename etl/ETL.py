@@ -39,7 +39,8 @@ weather_data['temperature'] = data['main']['temp']
 weather_data['weather'] = data['weather'][0]['main']
 weather_data['weather_desc'] = data['weather'][0]['description']
 
-df = pd.DataFrame([weather_data])
+df = pd.DataFrame(weather_data, index=[0])
+#df = pd.DataFrame([weather_data])
 
 #weather_data = pd.json_normalize(df['weather'][0] if 'weather' in df.columns else [])
 #weather_columns = [f'weather.{col}' for col in weather_data.columns]

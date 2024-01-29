@@ -26,12 +26,24 @@ data = list(mongo_collection.find({}))
 
 # Convert to Pandas DataFrame
 #df = pd.DataFrame(mongo_docs)
-df = pd.json_normalize(data)
+#df = pd.json_normalize(data)
 
 # Handle the 'weather' part separately
-weather_data = pd.json_normalize(df['weather'][0] if 'weather' in df.columns else [])
-weather_columns = [f'weather.{col}' for col in weather_data.columns]
-df[weather_columns] = weather_data
+weather_data = dict()
+weather_data['city_number'] = '1'
+weather_data['city_name'] = data['name']
+weather_data['country'] = data['sys']['country']
+weather_data['latitude'] = data['coord']['lat']
+weather_data['longitude'] = data['coord']['lon']
+weather_data['temperature'] = data['main']['temp']
+weather_data['weather'] = data['weather'][0]['main']
+weather_data['weather_desc'] = data['weather'][0]['description']
+
+df = pd.Dataframe(weather_data)
+
+#weather_data = pd.json_normalize(df['weather'][0] if 'weather' in df.columns else [])
+#weather_columns = [f'weather.{col}' for col in weather_data.columns]
+#df[weather_columns] = weather_data
 
 # Drop the original 'weather' column
 df.drop('weather', axis=1, inplace=True)

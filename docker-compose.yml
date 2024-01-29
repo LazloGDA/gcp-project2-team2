@@ -1,0 +1,23 @@
+# Docker compose for:
+# - Data Ingestion Container
+# - MongoDB Container
+
+version: '3.7'
+services:
+  python-app:
+    build: ./data_fetch
+    depends_on:
+      - mongodb
+    #volumes:
+    #  - .:/app
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mgdbdata:/data/db  
+volumes:
+  mgdbdata:  
+
+

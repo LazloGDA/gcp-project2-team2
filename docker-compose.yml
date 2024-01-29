@@ -1,6 +1,11 @@
 # Docker compose for:
 # - Data Ingestion Container
 # - MongoDB Container
+# Build and execution on local machine (WWSL) with:
+# (1) Set environment variable in Dockerfile:
+#     ENV HTTPS_PROXY=$https_proxy
+# (2) docker-compose build --build-arg "https_proxy=$https_proxy"
+# (3) docker-compose up
 
 version: '3.7'
 services:

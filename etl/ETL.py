@@ -22,20 +22,16 @@ mongo_client = MongoClient(mongo_uri)
 mongo_db = mongo_client[mongo_db_name]
 mongo_collection = mongo_db[mongo_collection_name]
 
-if mongo_collection.count_documents({}) == 0:
-    print("MongoDB collection is empty")
-else:
-    print("MongoDB collection is not empty")
 
 # Fetch data from MongoDB
 data = list(mongo_collection.find({}))
-
+print(data)
 # Convert to Pandas DataFrame
 
 weather_data = []
 for doc in data:
     weather_record = {
-        'city_number': str(uuid.uuid4()),
+       # 'city_number': str(uuid.uuid4()),
         'city_name': doc.get('name', 'Default Value'),
         'country': doc.get('sys', {}).get('country', 'Default Value'),
         'latitude': doc.get('coord', {}).get('lat', 'Default Value'),
@@ -48,7 +44,7 @@ for doc in data:
 
 
 df = pd.DataFrame(weather_data)
-
+print(df)
 #df = pd.DataFrame()
 
 #if len(data) > 0 and isinstance(data[0], dict):
@@ -73,13 +69,15 @@ if not df.empty:
 
     # Prepare a SQL query to insert data
     insert_sql = """
-    INSERT INTO weather (city_number, city_name, country, latitude, longitude, temperature, weather, weather_desc)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO weather (city_name, country, latitude, longitude, temperature, weather, weather_desc)
+    VALUES ( %s, %s, %s, %s, %s, %s, %s)
     """
 
     # Iterate over DataFrame rows and execute SQL query for each row
     for row in df.itertuples(index=False):
-        cursor.execute(insert_sql, tuple(row))
+        insert_values = (row.city_name, row.country, row.latitude, row.longitude, row.temperature, row.weather, row.weather_desc)
+        cursor.execute(insert_sql, insert_values) 
+ #cursor.execute(insert_sql, tuple(row))
 
     # Commit and close MySQL connection
     mysql_conn.commit()

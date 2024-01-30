@@ -25,41 +25,32 @@ mongo_collection = mongo_db[mongo_collection_name]
 data = list(mongo_collection.find({}))
 
 # Convert to Pandas DataFrame
-#df = pd.DataFrame(mongo_docs)
-#df = pd.json_normalize(data)
 
-#remove comment for itiration and add intendation!!!!!!!!************
+weather_data = []
+for doc in data:
+    weather_record = {
+        'city_number': doc.get('city_number', 'Default Value'),
+        'city_name': doc.get('name', 'Default Value'),
+        'country': doc.get('sys', {}).get('country', 'Default Value'),
+        'latitude': doc.get('coord', {}).get('lat', 'Default Value'),
+        'longitude': doc.get('coord', {}).get('lon', 'Default Value'),
+        'temperature': doc.get('main', {}).get('temp', 'Default Value'),
+        'weather': doc.get('weather', [{'main': 'Default Value'}])[0].get('main', 'Default Value'),
+        'weather_desc': doc.get('weather', [{'description': 'Default Value'}])[0].get('description', 'Default Value')
+    }
+    weather_data.append(weather_record)
 
-#weather_data = []
-#for doc in data:
-    #weather_record = {
-        #'city_number': doc.get('city_number', 'Default Value'),
-        #'city_name': doc.get('name', 'Default Value'),
-        #'country': doc.get('sys', {}).get('country', 'Default Value'),
-        #'latitude': doc.get('coord', {}).get('lat', 'Default Value'),
-        #'longitude': doc.get('coord', {}).get('lon', 'Default Value'),
-        #'temperature': doc.get('main', {}).get('temp', 'Default Value'),
-        #'weather': doc.get('weather', [{'main': 'Default Value'}])[0].get('main', 'Default Value'),
-        #'weather_desc': doc.get('weather', [{'description': 'Default Value'}])[0].get('description', 'Default Value')
-    #}
-   # weather_data.append(weather_record)
-#also modify to (weather_data)
-df = pd.DataFrame([weather_record])
-#df = pd.DataFrame([weather_data])
 
-#weather_data = pd.json_normalize(df['weather'][0] if 'weather' in df.columns else [])
-#weather_columns = [f'weather.{col}' for col in weather_data.columns]
-#df[weather_columns] = weather_data
+df = pd.DataFrame(weather_data)
 
-# Drop the original 'weather' column
-#df.drop('weather', axis=1, inplace=True)
+
 
 # Connect to MySQL
 mysql_conn = mysql.connector.connect(**mysql_config)
 cursor = mysql_conn.cursor()
 
 # Prepare a SQL query to insert data
-# Note: Adjust the SQL statement according to your table schema
+
 
 insert_sql = """
 INSERT INTO your_table_name (city_number, city_name, country, latitude, longitude, temperature, weather, weath>

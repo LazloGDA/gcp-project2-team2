@@ -96,9 +96,11 @@ def scrape_all_city_data(main_url):
   return df
 
 def get_weather_data(latitude, longitude, appid):
+  '''
+   Extract the Weather data for the coordinates
+   and return a JSON Object
+   '''
   weather_data = dict()
-
-
   # Define the URL
   # Uncomment this line and please use this carefully: the appid is limited to 1,000,000 calls/month and 60 calls/minute
   url = f"https://api.openweathermap.org/data/2.5/weather?lat={str(latitude)}&lon={str(longitude)}&units=metric&appid={appid}"
@@ -139,76 +141,83 @@ main_url="https://geokeo.com/database/city/de"
 print('Start main program')
 print(f"Scrap {main_url}")
 
-# Caution: geokeo.com is currently not available !
+# Caution: geokeo.com is sometimes not available !
 
-'''
+
 html_req = requests.get(main_url)
 soup = BeautifulSoup(html_req.text, 'html.parser')
 
 # Scrape the City data for main URL
 df = None
 df = scrape_all_city_data(main_url)
-'''
+
+# Reduce to 10 cities
+df = df.head(10)
 
 # Calculate the Weather Data for the Cities
-# Function provides a Dictonary which is split in 3 separate columns in the target DataFrame:
-# - temperature
-# - weather
-# - weather description
+# Teh function provides a JSON object 
 # Value for additional (3.) Call parameter (appid) is set beforehand in Main script
 
 print('Get Weather data')
-#df[['temperature', 'weather', 'weather_desc']] = df.apply(lambda row, appid=openweather_appid: get_weather_data(row['latitude'], row['longitude'], appid), axis=1, result_type='expand')
+df['weather_data'] = df.apply(lambda row, appid=openweather_appid: get_weather_data(row['latitude'], row['longitude'], appid), axis=1)
 
+print('Extracted Weather data')
+print(df)
 
-print('End main program')
-
-'''print(df)
-
-#import time
-#time.sleep(1800)
+# Convert JSON Objects into list
+print('Convert Weather Data JSON Object into a MongoDB-readable format')
+json_weather_data = df['weather_data'].to_list()
 
 '''
-# Hard coded example, because geokeo is currently not available
-weather_data = get_weather_data(52.517036, 13.388860, openweather_appid)
+#import time
+#time.sleep(1800)
+'''
 
-print(weather_data)
 
+# Hard coded example, because geokeo is currently (sometimes) not available
+'''
+ccity_number          city_name  country   latitude  longitude
+           1             Aachen  Germany  50.776351   6.083862
+           2           Augsburg  Germany  48.366804  10.898697
+           3  Bergisch Gladbach  Germany  50.992930   7.127738
+           4             Berlin  Germany  52.517036  13.388860
+           5             Berlin  Germany  52.517036  13.388860
+           6          Bielefeld  Germany  52.019100   8.531007
+           7             Bochum  Germany  51.481811   7.219664
+           8               Bonn  Germany  50.735851   7.100660
+           9            Bottrop  Germany  51.521581   6.929204
+          10             Bremen  Germany  53.075820   8.807165
+
+json_weather_data = get_weather_data(52.517036, 13.388860, openweather_appid)
+
+print(json_weather_data)
+'''
 
 # Connect to the MongoDB database
+print("Connect to MongoDB")
 client = pymongo.MongoClient("mongodb://mongodb:27017/")
 
-# database 
+# Database 
 db = client["data_db"]
 
 collection = db["data_collection"]
 
+# For clean-up reason drop the collection
+# collection.drop()
 
-if isinstance(weather_data, list):
-     collection.insert_many(weather_data)  
+print('Number of documents already in the collection:', collection.count_documents({}))
+
+print('Store Weather data in MongoDB Collection')
+
+if isinstance(json_weather_data, list):
+     collection.insert_many(json_weather_data)  
 else:
-     collection.insert_one(weather_data)
+     collection.insert_one(json_weather_data)
 
-print('Print MongoDB entry')
-print('Number of documents in collection:', collection.count_documents({}))
-
+print('Weather data in MongoDB Collection after insert')
 for doc in collection.find():
     print(doc)    
 
+print('Number of documents after load in the collection:', collection.count_documents({}))
 
-'''
-import datetime
-
-client = pymongo.MongoClient("mongodb://mongodb:27017/")
-db = client.testdb
-collection = db.testcollection
-
-# Add data with timestamp
-current_time = datetime.datetime.now()
-collection.insert_one({"message": "Hello from Python to MongoDB!", "timestamp": current_time})
-
-# Read data
-for doc in collection.find():
-    print(doc)
-
-'''
+print('End main program')

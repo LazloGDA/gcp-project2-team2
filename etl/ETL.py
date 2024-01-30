@@ -21,6 +21,11 @@ mongo_client = MongoClient(mongo_uri)
 mongo_db = mongo_client[mongo_db_name]
 mongo_collection = mongo_db[mongo_collection_name]
 
+if mongo_collection.count_documents({}) == 0:
+    print("MongoDB collection is empty")
+else:
+    print("MongoDB collection is not empty")
+
 # Fetch data from MongoDB
 data = list(mongo_collection.find({}))
 
@@ -48,7 +53,7 @@ df = pd.DataFrame()
 if len(data) > 0 and isinstance(data[0], dict):
     doc = data[0]
     weather_record = {
-        'city_number': doc.get('city_number', 'Default Value'),
+        'city_number': doc.get('city_number', 0),
         'city_name': doc.get('name', 'Default Value'),
 	'country': doc.get('sys', {}).get('country', 'Default Value'),
     	'latitude': doc.get('coord', {}).get('lat', 'Default Value'),
@@ -67,7 +72,7 @@ if not df.empty:
 
     # Prepare a SQL query to insert data
     insert_sql = """
-    INSERT INTO your_table_name (city_number, city_name, country, latitude, longitude, temperature, weather, weather_desc)
+    INSERT INTO weather (city_number, city_name, country, latitude, longitude, temperature, weather, weather_desc)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """
 

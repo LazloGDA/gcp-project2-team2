@@ -28,18 +28,21 @@ data = list(mongo_collection.find({}))
 #df = pd.DataFrame(mongo_docs)
 #df = pd.json_normalize(data)
 
-# Handle the 'weather' part separately
-weather_data = dict()
-weather_data['city_number'] = '1'
-weather_data['city_name'] = data['name']
-weather_data['country'] = data['sys']['country']
-weather_data['latitude'] = data['coord']['lat']
-weather_data['longitude'] = data['coord']['lon']
-weather_data['temperature'] = data['main']['temp']
-weather_data['weather'] = data['weather'][0]['main']
-weather_data['weather_desc'] = data['weather'][0]['description']
+weather_data = []
+for doc in data:
+    weather_record = {
+        'city_number': doc.get('city_number', 'Default Value'),
+        'city_name': doc.get('name', 'Default Value'),
+        'country': doc.get('sys', {}).get('country', 'Default Value'),
+        'latitude': doc.get('coord', {}).get('lat', 'Default Value'),
+        'longitude': doc.get('coord', {}).get('lon', 'Default Value'),
+        'temperature': doc.get('main', {}).get('temp', 'Default Value'),
+        'weather': doc.get('weather', [{'main': 'Default Value'}])[0].get('main', 'Default Value'),
+        'weather_desc': doc.get('weather', [{'description': 'Default Value'}])[0].get('description', 'Default Value')
+    }
+    weather_data.append(weather_record)
 
-df = pd.DataFrame(weather_data, index=[0])
+df = pd.DataFrame(weather_data)
 #df = pd.DataFrame([weather_data])
 
 #weather_data = pd.json_normalize(df['weather'][0] if 'weather' in df.columns else [])
@@ -47,7 +50,7 @@ df = pd.DataFrame(weather_data, index=[0])
 #df[weather_columns] = weather_data
 
 # Drop the original 'weather' column
-df.drop('weather', axis=1, inplace=True)
+#df.drop('weather', axis=1, inplace=True)
 
 # Connect to MySQL
 mysql_conn = mysql.connector.connect(**mysql_config)

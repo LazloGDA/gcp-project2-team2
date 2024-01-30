@@ -15,6 +15,13 @@ services:
       - mongodb
     #volumes:
     #  - .:/app
+  etl-app:
+    build: ./etl
+   # volumes:
+    #  - ./app:/app
+    depends_on:
+      - mongodb
+      - mysql
   mongodb:
     image: mongo:latest
     container_name: mongodb

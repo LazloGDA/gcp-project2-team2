@@ -22,6 +22,19 @@ services:
       - "27017:27017"
     volumes:
       - ./mgdbdata:/data/db  
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: dba
+      MYSQL_PASSWORD: "A1YTsqilzHkUQ4"
+      MYSQL_DATABASE: data_db
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    ports:
+      - "3306:3306"
 volumes:
   mgdbdata:  
 

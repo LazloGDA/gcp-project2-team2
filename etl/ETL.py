@@ -28,21 +28,23 @@ data = list(mongo_collection.find({}))
 #df = pd.DataFrame(mongo_docs)
 #df = pd.json_normalize(data)
 
-weather_data = []
-for doc in data:
-    weather_record = {
-        'city_number': doc.get('city_number', 'Default Value'),
-        'city_name': doc.get('name', 'Default Value'),
-        'country': doc.get('sys', {}).get('country', 'Default Value'),
-        'latitude': doc.get('coord', {}).get('lat', 'Default Value'),
-        'longitude': doc.get('coord', {}).get('lon', 'Default Value'),
-        'temperature': doc.get('main', {}).get('temp', 'Default Value'),
-        'weather': doc.get('weather', [{'main': 'Default Value'}])[0].get('main', 'Default Value'),
-        'weather_desc': doc.get('weather', [{'description': 'Default Value'}])[0].get('description', 'Default Value')
-    }
-    weather_data.append(weather_record)
+#remove comment for itiration and add intendation!!!!!!!!************
 
-df = pd.DataFrame(weather_data)
+#weather_data = []
+#for doc in data:
+    #weather_record = {
+        #'city_number': doc.get('city_number', 'Default Value'),
+        #'city_name': doc.get('name', 'Default Value'),
+        #'country': doc.get('sys', {}).get('country', 'Default Value'),
+        #'latitude': doc.get('coord', {}).get('lat', 'Default Value'),
+        #'longitude': doc.get('coord', {}).get('lon', 'Default Value'),
+        #'temperature': doc.get('main', {}).get('temp', 'Default Value'),
+        #'weather': doc.get('weather', [{'main': 'Default Value'}])[0].get('main', 'Default Value'),
+        #'weather_desc': doc.get('weather', [{'description': 'Default Value'}])[0].get('description', 'Default Value')
+    #}
+   # weather_data.append(weather_record)
+#also modify to (weather_data)
+df = pd.DataFrame([weather_record])
 #df = pd.DataFrame([weather_data])
 
 #weather_data = pd.json_normalize(df['weather'][0] if 'weather' in df.columns else [])

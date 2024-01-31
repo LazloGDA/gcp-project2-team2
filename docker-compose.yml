@@ -9,7 +9,7 @@
 
 version: '3.7'
 services:
-  python-app:
+  data-fetch-app:
     build: ./data_fetch
     depends_on:
       - mongodb

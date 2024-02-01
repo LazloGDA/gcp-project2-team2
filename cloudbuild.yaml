@@ -16,7 +16,7 @@ availableSecrets:
   - versionName: projects/gcp-project2-team2/secrets/docker-password/versions/1
     env: 'PASSWORD'
   - versionName: projects/gcp-project2-team2/secrets/docker-username/versions/1
-    env: 'USERNAME'
+    env: 'USERNAME' 
 
 # Set up kubectl
   - name: 'gcr.io/cloud-builders/kubectl'

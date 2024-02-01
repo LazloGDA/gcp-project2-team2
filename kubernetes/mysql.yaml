@@ -1,0 +1,44 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "mysql"
+  namespace: "default"
+  labels:
+    app: "mysql"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "mysql"
+  template:
+    metadata:
+      labels:
+        app: "mysql"
+    spec:
+      containers:
+      - name: "mysql-1"
+        image: "mysql:5.7"
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "mysql-hpa-amh5"
+  namespace: "default"
+  labels:
+    app: "mysql"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "mysql"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      target:
+        type: "Utilization"
+        averageUtilization: 80
+     

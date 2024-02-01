@@ -1,0 +1,42 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "mongodb"
+  namespace: "default"
+  labels:
+    app: "mongodb"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "mongodb"
+  template:
+    metadata:
+      labels:
+        app: "mongodb"
+    spec:
+      containers:
+      - name: "mongdb-1"
+        image: "mongdb:latest"
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "mongodb-hpa-zprm"
+  namespace: "default"
+  labels:
+    app: "mongodb"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "mongodb"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      target:
+        type: "Utilization"
+        averageUtilization: 80

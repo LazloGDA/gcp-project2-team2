@@ -1,0 +1,42 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "data-fetch-app"
+  namespace: "default"
+  labels:
+    app: "data-fetch-app"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "data-fetch-app"
+  template:
+    metadata:
+      labels:
+        app: "data-fetch-app"
+    spec:
+      containers:
+      - name: "github-lazlogda-gcp-project2-team2-1"
+        image: "gcr.io/gcp-project2-team2/github_lazlogda_gcp-project2-team2:$SHORT_SHA"
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "data-fetch-app-hpa-va93"
+  namespace: "default"
+  labels:
+    app: "data-fetch-app"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "data-fetch-app"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      target:
+        type: "Utilization"
+        averageUtilization: 80

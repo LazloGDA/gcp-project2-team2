@@ -1,0 +1,42 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "metabase"
+  namespace: "default"
+  labels:
+    app: "metabase"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "metabase"
+  template:
+    metadata:
+      labels:
+        app: "metabase"
+    spec:
+      containers:
+      - name: "metabase-1"
+        image: "agolazlo/metabase:latest"
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "metabase-hpa-1w52"
+  namespace: "default"
+  labels:
+    app: "metabase"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "metabase"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      target:
+        type: "Utilization"
+        averageUtilization: 80

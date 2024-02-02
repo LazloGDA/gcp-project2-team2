@@ -1,0 +1,30 @@
+availableSecrets:
+  secretManager:
+    - versionName: projects/gcp-project2-team2/secrets/docker-password/versions/1
+      env: 'PASSWORD'
+    - versionName: projects/gcp-project2-team2/secrets/docker-username/versions/1
+      env: 'USERNAME'
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args: ['-c', 'docker login --username=$$USERNAME --password=$$PASSWORD']
+  secretEnv: ['USERNAME', 'PASSWORD']
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args: ['-c', 'docker build -t $$USERNAME/data-fetch-app:latest .']
+  secretEnv: ['USERNAME']
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args: ['-c', 'docker push $$USERNAME/data-fetch-app:latest']
+  secretEnv: ['USERNAME']
+  # Set up kubectl
+- name: 'gcr.io/cloud-builders/kubectl' 
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    gcloud container clusters get-credentials autopilot-cluster-1 --region europe-west1 --project gcp-project2-team2
+    kubectl set image deployment/data-fetch-app github-lazlogda-gcp-project2-team2-1=europe-west1-docker.pkg.dev/gcp-project2-team2/github_lazlogda_gcp-project2-team2:data-fetch-app
+images:
+  - 'europe-west1-docker.pkg.dev/gcp-project2-team2/github_lazlogda_gcp-project2-team2:data-fetch-app'
+

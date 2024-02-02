@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: etl-app
+  name: etl-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: etl-app
+  template:
+    metadata:
+      labels:
+        app: etl-app
+    spec:
+      containers:
+      - image: gcr.io/gcp-project2-team2/github.com/lazlogda/gcp-project2-team2:etl-app
+        name: gcp-project2-team2-1
